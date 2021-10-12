@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="container content-space-4 content-space-b-lg-3">
+        <div class="w-lg-75 mx-auto">
+            <div class="mb-5">
+                <a class="link" th:href="|javascript:moveList(${dto.sno})|">
+                    <i class="bi-chevron-left small ms-1"></i> Back to List
+                </a>
+            </div>
+
+            <!-- Card -->
+            <div class="card card-lg">
+                <div class="card-body">
+                    <!-- Title -->
+                    <div class="row justify-content-sm-between align-items-sm-center mb-5">
+                        <div class="col-sm mb-3 mb-sm-0">
+                            <h1 class="card-title h2">[[${dto.title}]]</h1>
+                            <p class="card-text">[[${dto.writer}]]</p>
+                        </div>
+
+                        <div class="col-sm-auto">
+                            <a class="btn btn-primary btn-transition" href="#">
+                                거래하기
+                            </a>
+                        </div>
+                    </div>
+                    <!-- End Title -->
+
+                    <div class="mb-5">
+                        <p>[[${dto.content}]]</p>
+                    </div>
+
+                </div>
+            </div>
+            <!-- End Card -->
+        </div>
+    </div>
+    <!-- End Content -->
+
+</div>
+
+<th:block layout:fragment="script">
+
+    <script th:inline="javascript">
+        function modify(sno) {
+
+            const page = [[${pageRequestDTO.page}]]
+            const size = [[${pageRequestDTO.size}]]
+            const type = [[${pageRequestDTO.type}]]
+            const keyword = [[${pageRequestDTO.keyword}]]
+
+            let searchQuery = ''
+
+            if (type && keyword) {
+                searchQuery += `&type=${type}&keyword=${keyword}`
+            }
+
+            self.location = `/saleboard/modify?sno=${sno}&page=${page}&size=${size}` + searchQuery
+
+        }
+
+        function moveList() {
+
+            const page = [[${pageRequestDTO.page}]]
+            const size = [[${pageRequestDTO.size}]]
+            const type = [[${pageRequestDTO.type}]]
+            const keyword = [[${pageRequestDTO.keyword}]]
+
+            let searchQuery = ''
+
+            if (type && keyword) {
+                searchQuery += `&type=${type}&keyword=${keyword}`
+            }
+
+            self.location = `/saleboard/list?page=${page}&size=${size}` + searchQuery
+
+        }
+
+    </script>
+    
+</th:block>
+
+</body>
+</html>

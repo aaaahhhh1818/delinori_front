@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="container content-space-2 content-space-lg-3">
+        <!-- Form Card -->
+        <div class="container content-space-2 content-space-lg-3">
+            <div class="w-lg-75 mx-lg-auto">
+                <!-- Heading -->
+                <div class="mb-5">
+                    <a class="link" href="/saleboard/list">
+                        <i class="bi-chevron-left small ms-1"></i> Back to List
+                    </a>
+                </div>
+                <div class="text-center mb-7">
+                    <h1 class="card-title">REGISTER</h1>
+                    <p class="card-text">거래하고 싶은 물건을 올려주세요 !</p>
+                </div>
+                <!-- End Heading -->
+
+                <!-- Card -->
+                <div class="card card-bordered shadow-none">
+                    <div class="card-body">
+                        <!-- Form -->
+                        <form th:action="@{/saleboard/register}" method="post">
+
+                            <div class="row mb-3">
+                                <label for="title" class="col-sm-3 col-form-label">Title</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="title" class="form-control form-control-lg"
+                                           id="title" placeholder="title"
+                                           aria-label="title">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="writer" class="col-sm-3 col-form-label">Writer</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="writer" class="form-control form-control-lg"
+                                           id="writer" placeholder="writer"
+                                           aria-label="writer">
+                                </div>
+                            </div>
+
+                            <!-- content -->
+                            <div class="row mb-3">
+                                <label for="content" class="col-sm-3 col-form-label form-label">Content</label>
+
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="content" id="content"
+                                              placeholder="content"
+                                              rows="7">
+                                    </textarea>
+                                </div>
+                            </div>
+
+                            <!-- upload -->
+                            <div class="row mb-3">
+                                <label class="col-sm-3 col-form-label form-label">Preview image</label>
+                                <div class="col-sm-9">
+                                    <!-- File Attachment Input -->
+                                    <div id="dropzoneUpload" class="js-dropzone dz-dropzone dz-dropzone-card">
+                                        <div class="dz-message">
+                                            <img class="avatar mb-3" src="../assets/svg/illustrations/add-file.svg"
+                                                 alt="Image Description">
+                                            <span class="d-block">Browse your device and upload images</span>
+                                            <span class="d-block text-muted small">Maximum file size is 2MB</span>
+                                        </div>
+                                    </div>
+                                    <!-- End File Attachment Input -->
+                                </div>
+                            </div>
+                            <!-- End upload -->
+
+                            <div class="text-center mt-5">
+                                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <!-- End Card -->
+                </div>
+            </div>
+            <!-- End Form Card -->
+        </div>
+    </div>
+</div>
+
+<!-- JS Implementing Plugins -->
+<script th:src="@{/assets/vendor/hs-file-attach/dist/hs-file-attach.min.js}"></script>
+<script th:src="@{/assets/vendor/hs-count-characters/dist/js/hs-count-characters.js}"></script>
+<script th:src="@{/assets/vendor/quill/dist/quill.min.js}"></script>
+<script th:src="@{/assets/vendor/dropzone/dist/min/dropzone.min.js}"></script>
+
+<!-- JS Front -->
+
+<!-- JS Plugins Init. -->
+<script>
+    (function() {
+        // INITIALIZATION OF FILE ATTACH
+        // =======================================================
+        new HSFileAttach('.js-file-attach')
+
+
+        // INITIALIZATION OF COUNT CHARACTERS
+        // =======================================================
+        new HSCountCharacters('.js-count-characters')
+
+
+        // INITIALIZATION OF QUILLJS EDITOR
+        // =======================================================
+        HSCore.components.HSQuill.init('.js-quill')
+
+
+        // INITIALIZATION OF DROPZONE
+        // =======================================================
+        HSCore.components.HSDropzone.init('.js-dropzone')
+    })()
+</script>
+
+</body>
+</html>
