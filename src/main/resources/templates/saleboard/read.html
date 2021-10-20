@@ -18,77 +18,191 @@
                 </a>
             </div>
 
-            <!-- Card -->
-            <div class="card card-lg">
-                <div class="card-body">
-                    <!-- Title -->
-                    <div class="row justify-content-sm-between align-items-sm-center mb-5">
-                        <div class="col-sm mb-3 mb-sm-0">
-                            <h1 class="card-title h2">[[${dto.title}]]</h1>
-                            <p class="card-text">[[${dto.writer}]]</p>
-                        </div>
+            <!-- Title -->
+            <div class="row justify-content-sm-between align-items-sm-center mb-5">
+                <div class="col-sm mb-3 mb-sm-0">
+                    <h1 class="card-title h2">[[${dto.title}]]</h1>
+                    <p class="card-text">[[${dto.writer}]]</p>
+                </div>
 
-                        <div class="col-sm-auto">
-                            <a class="btn btn-primary btn-transition" href="#">
-                                거래하기
-                            </a>
-                        </div>
-                    </div>
-                    <!-- End Title -->
-
-                    <div class="mb-5">
-                        <p>[[${dto.content}]]</p>
-                    </div>
-
+                <div class="col-sm-auto">
+                    <a class="btn btn-primary btn-transition" href="#">
+                        거래하기
+                    </a>
                 </div>
             </div>
-            <!-- End Card -->
+            <!-- End Title -->
+
+            <div class="mb-5">
+                <p>[[${dto.content}]]</p>
+            </div>
+
+            <!-- Reply Input -->
+            <div class="input-card input-card-sm border mb-3">
+                <div class="input-card-form">
+                    <label for="ReplyerInput" class="form-label visually-hidden">Replyer</label>
+                    <input type="text" class="form-control" id="ReplyerInput" placeholder="Replyer" aria-label="Enter replyer">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary">Get started</button>
+            <!-- END Reply -->
+
+            <!-- Reply -->
+            <div class="container content-space-1 content-space-lg-3">
+                <!-- Heading -->
+                <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+                    <h2>comments</h2>
+                </div>
+                <!-- End Heading -->
+
+                <div class="row justify-content-lg-center">
+                    <div class="col-lg-8">
+                        <!-- Comment -->
+                        <ul class="list-comment replyUL">
+
+                        </ul>
+
+                        <ul class="pagination">
+
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- End Reply -->
+
         </div>
     </div>
     <!-- End Content -->
 
-</div>
+        </div>
 
-<th:block layout:fragment="script">
 
-    <script th:inline="javascript">
-        function modify(sno) {
+    </div>
 
-            const page = [[${pageRequestDTO.page}]]
-            const size = [[${pageRequestDTO.size}]]
-            const type = [[${pageRequestDTO.type}]]
-            const keyword = [[${pageRequestDTO.keyword}]]
+    <th:block layout:fragment="script">
 
-            let searchQuery = ''
+        <script th:inline="javascript">
+            function modify(sno) {
 
-            if (type && keyword) {
-                searchQuery += `&type=${type}&keyword=${keyword}`
+                const page = [[${pageRequestDTO.page}]]
+                const size = [[${pageRequestDTO.size}]]
+                const type = [[${pageRequestDTO.type}]]
+                const keyword = [[${pageRequestDTO.keyword}]]
+
+                let searchQuery = ''
+
+                if (type && keyword) {
+                    searchQuery += `&type=${type}&keyword=${keyword}`
+                }
+
+                self.location = `/saleboard/modify?sno=${sno}&page=${page}&size=${size}` + searchQuery
+
             }
 
-            self.location = `/saleboard/modify?sno=${sno}&page=${page}&size=${size}` + searchQuery
+            function moveList() {
 
-        }
+                const page = [[${pageRequestDTO.page}]]
+                const size = [[${pageRequestDTO.size}]]
+                const type = [[${pageRequestDTO.type}]]
+                const keyword = [[${pageRequestDTO.keyword}]]
 
-        function moveList() {
+                let searchQuery = ''
 
-            const page = [[${pageRequestDTO.page}]]
-            const size = [[${pageRequestDTO.size}]]
-            const type = [[${pageRequestDTO.type}]]
-            const keyword = [[${pageRequestDTO.keyword}]]
+                if (type && keyword) {
+                    searchQuery += `&type=${type}&keyword=${keyword}`
+                }
 
-            let searchQuery = ''
+                self.location = `/saleboard/list?page=${page}&size=${size}` + searchQuery
 
-            if (type && keyword) {
-                searchQuery += `&type=${type}&keyword=${keyword}`
             }
 
-            self.location = `/saleboard/list?page=${page}&size=${size}` + searchQuery
+        </script>
 
-        }
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    </script>
-    
-</th:block>
+        <script th:inline="javascript">
+
+            const sno = [[${dto.sno}]]
+            let replyPage = 1
+            let replySize = 10
+
+            function makeListAndPaging(replyPageResponse) {
+
+                const dtoList = replyPageResponse.dtoList
+
+                replyPage = replyPageResponse.page
+                replySize = replyPageResponse.size
+
+                console.log(dtoList)
+
+                let str = ""
+
+                for (const reply of dtoList) {
+                    console.log(reply)
+
+                    str += `<li class="list-comment-item">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="flex-shrink-0">
+                                        <img class="avatar avatar-circle" src="../assets/img/profile-img.jpg" alt="Image Description">
+                                    </div>
+
+                                    <div class="flex-grow-1 ms-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6>${reply.replyer}</h6>
+                                            <span class="d-block small text-muted">${reply.replyDate}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="replyBox rtext" data-rno="${reply.rno}">${reply.reply}</div>
+                                <a class="link" href="#">Reply</a>
+                            </li>`
+                }
+
+                document.querySelector(".replyUL").innerHTML = str
+
+                //paging
+                const pagination = document.querySelector(".pagination")
+                let pageStr = ""
+
+                //prev
+                if (replyPageResponse.prev) {
+                    pageStr += `<li class="page-item"><a class="page-link" href="javascript:getList(${replyPageResponse.start - 1})" tabindex="-1">«</a></li>`
+                }
+
+                //num
+                for (let i = replyPageResponse.start; i <= replyPageResponse.end; i++) {
+                    pageStr += `<li class="page-item ${i == replyPageResponse.page ? "active" : ""}"><a class="page-link" href="javascript:getList(${i})" tabindex="-1">${i}</a></li>`
+                }
+
+                //next
+                if (replyPageResponse.next) {
+                    pageStr += `<li class="page-item"><a class="page-link" href="javascript:getList(${replyPageResponse.end + 1})" tabindex="-1">»</a></li>`
+                }
+
+                pagination.innerHTML = pageStr
+
+            }
+
+            async function getList(pageNum) {
+
+                const response = await axios.get(`/saleboard/replies/list/${sno}?page=${pageNum}`)
+
+                //console.log(response)
+
+                const replyPageResponse = await response.data
+
+                //console.log(replyPageResponse)
+
+                makeListAndPaging(replyPageResponse)
+
+            }
+
+            getList(-1)
+
+        </script>
+
+    </th:block>
 
 </body>
 </html>

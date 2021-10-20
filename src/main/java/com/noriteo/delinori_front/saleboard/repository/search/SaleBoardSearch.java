@@ -8,4 +8,6 @@ public interface SaleBoardSearch {
 
     Page<SaleBoard> search(char[] typeArr, String keyword, Pageable pageable);
 
+    Page<Object[]> searchWithReplyCount(char[] typeArr, String keyword, Pageable pageable);
+
 }

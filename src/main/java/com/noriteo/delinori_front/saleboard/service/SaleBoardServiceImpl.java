@@ -3,6 +3,7 @@ package com.noriteo.delinori_front.saleboard.service;
 import com.noriteo.delinori_front.saleboard.dto.PageRequestDTO;
 import com.noriteo.delinori_front.saleboard.dto.PageResponseDTO;
 import com.noriteo.delinori_front.saleboard.dto.SaleBoardDTO;
+import com.noriteo.delinori_front.saleboard.dto.SaleBoardListDTO;
 import com.noriteo.delinori_front.saleboard.entity.SaleBoard;
 import com.noriteo.delinori_front.saleboard.repository.SaleBoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,6 +58,34 @@ public class SaleBoardServiceImpl implements SaleBoardService {
         long totalCount = result.getTotalElements();
 
         return new PageResponseDTO<>(pageRequestDTO, (int)totalCount, dtoList);
+
+    }
+
+    @Override
+    public PageResponseDTO<SaleBoardListDTO> getListWithReplyCount(PageRequestDTO pageRequestDTO) {
+
+        char[] typeArr = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+
+        Pageable pageable = PageRequest.of(
+                pageRequestDTO.getPage() - 1,
+                pageRequestDTO.getSize(),
+                Sort.by("sno").descending());
+
+        Page<Object[]> result = saleBoardRepository.searchWithReplyCount(typeArr, keyword, pageable);
+
+        List<SaleBoardListDTO> dtoList = result.get().map(objects -> {
+            SaleBoardListDTO listDTO = SaleBoardListDTO.builder()
+                    .sno((Long) objects[0])
+                    .title((String) objects[1])
+                    .writer((String) objects[2])
+                    .regDate((LocalDateTime) objects[3])
+                    .replyCount((Long) objects[4])
+                    .build();
+            return listDTO;
+        }).collect(Collectors.toList());
+
+        return new PageResponseDTO<>(pageRequestDTO, (int)result.getTotalElements(), dtoList);
 
     }
 

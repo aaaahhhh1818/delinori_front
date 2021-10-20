@@ -23,7 +23,8 @@ public class SaleBoardController {
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model) {
 
-        model.addAttribute("responseDTO", saleBoardService.getList(pageRequestDTO));
+        //model.addAttribute("responseDTO", saleBoardService.getList(pageRequestDTO));
+        model.addAttribute("responseDTO", saleBoardService.getListWithReplyCount(pageRequestDTO));
 
     }
 
@@ -53,7 +54,17 @@ public class SaleBoardController {
     @PostMapping("/modify")
     public String modify(SaleBoardDTO saleBoardDTO, PageRequestDTO pageRequestDTO, RedirectAttributes redirectAttributes) {
 
-        //redirectAttributes.addAttribute("dto", saleBoardService.modify(saleBoardDTO);
+        log.info("-----------------------");
+        log.info(saleBoardDTO);
+
+        redirectAttributes.addAttribute("sno", saleBoardDTO.getSno());
+        redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
+        redirectAttributes.addAttribute("size", pageRequestDTO.getSize());
+
+        if(pageRequestDTO.getTypes() != null) {
+            redirectAttributes.addAttribute("type", pageRequestDTO.getType());
+            redirectAttributes.addAttribute("size", pageRequestDTO.getKeyword());
+        }
 
         return "redirect:/saleboard/read";
 
